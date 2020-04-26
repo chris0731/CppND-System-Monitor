@@ -161,11 +161,11 @@ vector<string> LinuxParser::CpuUtilization() {
     std::getline(stream,line);
     std::istringstream linestream(line);
     linestream >> key;
-    int i =0;
-    while(i<10){
-        linestream >> cpuData[i];            
-        i++;
+    for(int i = 0; i<10; i++){
+        linestream >> value;            
+        cpuData[i] = value;
     }
+    return cpuData;
   } 
 
   return cpuData;
@@ -234,6 +234,7 @@ string LinuxParser::Ram(int pid) {
       if(key=="VmSize:"){
         memUse = std::stoi(value);
         memUse = memUse/1000;
+        return std::to_string(memUse);
       }
     }
   }
@@ -279,14 +280,15 @@ string LinuxParser::User(int pid) {
 long LinuxParser::UpTime(int pid) { 
   string line, value, garb;
   long upTime;
+  vector<string> check(23);
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
   if(stream.is_open()){
     while(std::getline(stream,line)){
       std::istringstream linestream(line);
       for(int i=0; i<22; i++){
-        linestream >> value;
+        linestream >> check[i];
       }
-      upTime = std::stol(value)/sysconf(_SC_CLK_TCK);
+      upTime = std::stol(check[21])/sysconf(_SC_CLK_TCK);
       return upTime;
     }
   }

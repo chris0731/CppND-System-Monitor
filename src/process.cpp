@@ -28,19 +28,8 @@ float Process::CpuUtilization() {
     
     long totTime = LinuxParser::ActiveJiffies(pid_);
     long sysUpTime = LinuxParser::UpTime();
-
-    vector<string> values(26);
-    string line;
-    std::ifstream stream(LinuxParser::kProcDirectory + std::to_string(pid_) + LinuxParser::kStatFilename);
-    if(stream.is_open()){
-        std::getline(stream,line);
-        std::istringstream linestream(line);
-        for(int i=0; i<25; i++){
-        linestream >> values[i];
-        }
-    }
-
-    long seconds = sysUpTime - (std::stol(values[21])/sysconf(_SC_CLK_TCK));
+    
+    long seconds = sysUpTime - upTime_;
     cpuUtil = (totTime/sysconf(_SC_CLK_TCK)) / (float) seconds;
     cpuUtil_ = cpuUtil;
     return cpuUtil_;
