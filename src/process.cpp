@@ -27,10 +27,8 @@ float Process::CpuUtilization() {
     float cpuUtil;
     
     long totTime = LinuxParser::ActiveJiffies(pid_);
-    long sysUpTime = LinuxParser::UpTime();
-    
-    long seconds = sysUpTime - upTime_;
-    cpuUtil = (totTime/sysconf(_SC_CLK_TCK)) / (float) seconds;
+        
+    cpuUtil = (totTime/sysconf(_SC_CLK_TCK)) / (float) upTime_;
     cpuUtil_ = cpuUtil;
     return cpuUtil_;
 }
@@ -49,5 +47,5 @@ long int Process::UpTime() { return upTime_; }
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-    return ram_ < a.ram_;
+    return cpuUtil_ < a.cpuUtil_;
 }
